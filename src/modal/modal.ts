@@ -11,7 +11,6 @@ export class Modal {
     function checkIfDimensionsAreNumber(wf,hf,lf){
 
       let errorMessage = "";
-
       let bool = true;
 
       if(isNumber(wf) == false){
@@ -28,24 +27,22 @@ export class Modal {
       }
       if(bool === false){
         alert(errorMessage);
-      }  
+      }
       return bool;
     }
 
     function modalSubmit(event) {
       event.preventDefault();
 
-      const wf = (<HTMLInputElement>document.getElementById("WidthForm")).value;
-      const hf = (<HTMLInputElement>document.getElementById("HeightForm")).value;
-      const lf = (<HTMLInputElement>document.getElementById("LengthForm")).value;
+      let wf = (<HTMLInputElement>document.getElementById("WidthForm")).value;
+      let hf = (<HTMLInputElement>document.getElementById("HeightForm")).value;
+      let lf = (<HTMLInputElement>document.getElementById("LengthForm")).value;
 
       let checkNumbers = checkIfDimensionsAreNumber(wf,hf,lf);
 
-      if(checkNumbers === false){
+      if(checkNumbers !== false){
 
         console.log("Error in numbers");
-
-      }else{
       //send options data to backend
       const options = {
         method: 'POST',
@@ -54,9 +51,11 @@ export class Modal {
           'Content-Type': 'application/json',
           }
         };
-        console.log(options.body);
-      }//else ends
+        alert(options.body);
+        modalContainer.style.display = "none";
+      }//if statement ends
     };
+
 
     modalSubmitButton.addEventListener("click", function(event){
     modalSubmit(event)
