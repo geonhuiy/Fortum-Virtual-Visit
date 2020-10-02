@@ -4,17 +4,48 @@ export class Modal {
 
     const modalContainer = document.getElementById("modal-container");
     const closeButton = document.getElementsByClassName("close")[0];
-    const modalSubmitButton = document.getElementById("modalSubmit");
+    const modalSubmitButton = (<HTMLInputElement>document.getElementById("modalSubmit"));
+
+    function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) };
+
+    function checkIfDimensionsAreNumber(wf,hf,lf){
+
+      let errorMessage = "";
+
+      let bool = true;
+
+      if(isNumber(wf) == false){
+        errorMessage += "Width is not Number! \n";
+        bool = false;
+      }
+      if(isNumber(hf) == false){
+        errorMessage += "Height is not Number! \n";
+        bool = false;
+      }
+      if(isNumber(lf) == false){
+        errorMessage += "Lenght is not Number! \n"
+        bool = false;
+      }
+      if(bool === false){
+        alert(errorMessage);
+      }  
+      return bool;
+    }
 
     function modalSubmit(event) {
       event.preventDefault();
 
-      const wf = document.getElementById("WidthForm").value;
-      const hf = document.getElementById("HeightForm").value;
-      const lf = document.getElementById("LengthForm").value;
+      const wf = (<HTMLInputElement>document.getElementById("WidthForm")).value;
+      const hf = (<HTMLInputElement>document.getElementById("HeightForm")).value;
+      const lf = (<HTMLInputElement>document.getElementById("LengthForm")).value;
 
-      console.log("submit modal form");
+      let checkNumbers = checkIfDimensionsAreNumber(wf,hf,lf);
 
+      if(checkNumbers === false){
+
+        console.log("Error in numbers");
+
+      }else{
       //send options data to backend
       const options = {
         method: 'POST',
@@ -24,14 +55,14 @@ export class Modal {
           }
         };
         console.log(options.body);
-    }
+      }//else ends
+    };
 
     modalSubmitButton.addEventListener("click", function(event){
     modalSubmit(event)
     });
 
     closeButton.addEventListener("click", function () {
-      console.log("asds");
       modalContainer.style.display = "none";
     });
 
