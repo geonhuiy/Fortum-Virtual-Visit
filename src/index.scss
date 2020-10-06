@@ -26,6 +26,19 @@ indoorviewer {
   border: 1px solid #888;
   width: 80%;
   height: 50%;
+  text-align: center;
+}
+
+.dim {
+  margin-bottom: 2em;
+}
+
+label {
+  font-size: 20px;
+}
+
+#dimensions {
+  display: inline-block;
 }
 
 .close {
