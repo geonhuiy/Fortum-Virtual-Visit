@@ -25,8 +25,10 @@ export class SideBarMenuModifier {
 
   private callbackFunction(): void {
     //window.alert("Button works");
-    document.getElementById("equipment").style.display = "block";
+    document.getElementById("modal-container").style.display = "block";
+    this.ivApi.ui.sidebarMenuService.closeMenu();
   }
+
   constructor(private ivApi: ApiInterface) {
       const menuItems = this.ivApi.ui.sidebarMenuService.items;
       menuItems.splice(1, menuItems.length, this.callbackMenuItem);
