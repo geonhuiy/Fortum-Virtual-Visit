@@ -1,3 +1,5 @@
+import {Model} from "./model";
+
 export class Modal {
   constructor() {}
   public assignEventListeners(): void {

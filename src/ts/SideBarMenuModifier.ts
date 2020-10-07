@@ -31,7 +31,8 @@ export class SideBarMenuModifier {
 
   constructor(private ivApi: ApiInterface) {
       const menuItems = this.ivApi.ui.sidebarMenuService.items;
-      menuItems.splice(1, menuItems.length, this.callbackMenuItem);
+      //menuItems.splice(1, menuItems.length, this.callbackMenuItem);
+      menuItems.push(this.callbackMenuItem);
       //ivApi.ui.sidebarMenuService.openMenu();
   }
 }
