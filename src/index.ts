@@ -20,6 +20,7 @@ class TestApp
 				this.modal.setLayer(this.ivApi);
 				this.modal.assignEventListeners();
 				new SideBarMenuModifier(iv);
+				console.log("Log");
 			});
 	}
 }
