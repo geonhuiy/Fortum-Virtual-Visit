@@ -1,6 +1,7 @@
 import { ApiInterface, SceneLayerConfigInterface } from "@navvis/indoorviewer";
 import { Layer } from "./layer";
 import * as THREE from "three";
+import { MouseMove } from "./mouseMove";
 
 export class Modal {
   private layer: Layer;
@@ -9,22 +10,20 @@ export class Modal {
 
   public setLayer(iv: ApiInterface): void {
     this.main_view = iv.legacyApi.getMainView();
-    console.log(this.main_view);
+    //console.log(this.main_view);
     this.main_scene = iv.legacyApi.getMainView().scene;
     this.layer = new Layer(this.main_view, this.main_view.scene);
     this.main_view.addToScene(this.layer);
   }
-  public paintSphere(): void {
+  public renderBox(): void {
     var height = <HTMLInputElement>document.getElementById("height");
     var width = <HTMLInputElement>document.getElementById("width");
     var length = <HTMLInputElement>document.getElementById("length");
-    //var geo = new THREE.SphereGeometry(1, 32, 32);
     var geo = new THREE.BoxGeometry(
       parseFloat(length.value),
       parseFloat(height.value),
       parseFloat(width.value)
     );
-    //var box = new THREE.BoxGeometry()
     var mat = new THREE.MeshLambertMaterial({
       color: 0xffff00,
       transparent: true,
@@ -37,6 +36,8 @@ export class Modal {
     console.log("Mesh added");
   }
   public assignEventListeners(): void {
+    var mouseMove = new MouseMove(this.main_view.raycaster, this.main_view);
+    mouseMove.assignContainer();
     var modalContainer = document.getElementById("modal-container");
     var closeButton = document.getElementsByClassName("close")[0];
     var submitButton = document.getElementById("submit");
@@ -52,9 +53,9 @@ export class Modal {
       }
     });
 
-    submitButton.addEventListener("click", (evt) =>{
-      evt.preventDefault();
-      this.paintSphere();
+    submitButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      this.renderBox();
     });
   }
 }
