@@ -56,6 +56,7 @@ export class Modal {
       event.preventDefault();
       this.renderBox();
       modalContainer.style.display = "none";
+      this.main_scene.add(this.mouseMove.mesh);
     });
     container.addEventListener("click", (event) => {
       if (this.mouseMove.mesh != null) {
@@ -65,7 +66,7 @@ export class Modal {
         this.mouseMove.mesh.position.set(
           this.main_view.getCurrentCursorPosition().location.x,
           this.main_view.getCurrentCursorPosition().location.y,
-          this.main_view.getCurrentCursorPosition().location.z
+          this.main_view.getCurrentCursorPosition().location.z,
         );
         this.main_scene.add(this.mouseMove.mesh);
         this.mouseMove.mesh = null;

@@ -31,11 +31,19 @@ export class MouseMove {
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = (event.clientY / window.innerHeight) * 2 - 1;
     this.raycast.setFromCamera(this.mouse, this.raycast.camera);
-    var intersects = this.raycast.intersectObjects(
-      this.view.scene.children,
-      true
-    );
+    var intersects = this.raycast.intersectObjects(this.view.scene.children)[0];
+    if (intersects) {
+      console.log(intersects);
+      //intersects.object.visible = false;
+    }
+
     this.currentObjPos = this.view.getObjectsUnderCursor(this.mouse)[0].point;
+    //this.mesh.position.copy(this.currentObjPos);
+    this.mesh.position.set(
+      this.view.getCurrentCursorPosition().location.x,
+      this.view.getCurrentCursorPosition().location.y,
+      this.view.getCurrentCursorPosition().location.z,
+    );
     //console.log(this.currentObjPos);
   }
 }
