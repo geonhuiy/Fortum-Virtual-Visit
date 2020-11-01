@@ -3,6 +3,7 @@ import {ApiInterface, getApi} from "@navvis/indoorviewer";
 import { SideBarMenuModifier } from "./ts/SideBarMenuModifier";
 import { Modal } from "./ts/modal";
 import { Layer } from "./ts/layer";
+import { MouseMove } from "./ts/mouseMove";
 class TestApp
 {
 	public ivApi: ApiInterface;
@@ -19,16 +20,9 @@ class TestApp
 				this.modal.setLayer(this.ivApi);
 				this.modal.assignEventListeners();
 				new SideBarMenuModifier(iv);
-				//this.setLayer();
+				console.log("Log");
 			});
 	}
-	/*setLayer() {
-		var main_view = this.ivApi.legacyApi.getMainView();
-		console.log(main_view);
-		this.layer = new Layer(main_view, main_view.scene);
-		main_view.addToScene(this.layer);
-		this.layer.paintSphere();
-	}*/
 }
 
 (<any>window).TestApp = new TestApp();
