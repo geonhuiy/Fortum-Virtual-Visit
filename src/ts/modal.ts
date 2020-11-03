@@ -57,12 +57,52 @@ export class Modal {
       }
     });
 
+    container.addEventListener("click", function (event) {
+      /*
+      console.log("X: ",this.main_view.getCurrentCursorPosition().location.x);
+      console.log("Y: ",this.main_view.getCurrentCursorPosition().location.y);
+      console.log("Z: ",this.main_view.getCurrentCursorPosition().location.z);
+      */
+    });
+
+    container.addEventListener("click", (event) => {
+
+  const point = this.main_view.getCurrentCursorPosition().geometry.coordinates;
+
+    // console.log("datasetLocation: ",this.main_view.getCurrentCursorPosition().geometry.coordinates);
+   //  let room = this.main_view.api.siteModel.repository
+  //  .findClosestByTypeAndDistance2D(this.main_view.api.siteModel.types.ROOM, point, 5);
+    // console.log(this.main_view.siteModel);
+   //  console.log("point: ",point);
+
+ //    console.log("datasetLocation: ",this.main_view.getCurrentCursorPosition().location);
+    //  console.log("GeoTransformationService: ",this.main_view.layerLocationMarker.GeoTransformationService.TransformService);
+    //  console.log("Y: ",this.main_view.getCurrentCursorPosition().location.y);
+    //  console.log("Z: ",this.main_view.getCurrentCursorPosition().location.z);
+     /* if (this.mesh != null) {
+        this.mouseMove.currentObjPos = this.mouseMove.view.getObjectsUnderCursor(
+          this.mouseMove.mouse
+        )[0].point;
+  
+        this.main_scene.add(this.mesh);
+        this.mesh = null;
+
+        console.log(this.main_view.scene);
+        console.log(this.main_view.getCurrentCursorPosition());
+      }*/
+
+      //console.log(this.mouseMove.currentObjPos);
+      //console.log(this.mouseMove.view.getObjectsUnderCursor(this.mouseMove.mouse));
+    });
+
+
     dimensionForm.addEventListener("submit", (event) => {
       event.preventDefault();
       this.renderBox();
       modalContainer.style.display = "none";
     });
-    container.addEventListener("click", (event) => {
+
+   /* container.addEventListener("click", (event) => {
       if (this.mesh != null) {
         this.mouseMove.currentObjPos = this.mouseMove.view.getObjectsUnderCursor(
           this.mouseMove.mouse
@@ -72,6 +112,9 @@ export class Modal {
           this.main_view.getCurrentCursorPosition().location.y,
           this.main_view.getCurrentCursorPosition().location.z,
         );
+        console.log("X: ",this.main_view.getCurrentCursorPosition().location.x);
+        console.log("Y: ",this.main_view.getCurrentCursorPosition().location.y);
+        console.log("Z: ",this.main_view.getCurrentCursorPosition().location.z);
         this.main_scene.add(this.mesh);
         this.mesh = null;
         console.log(
@@ -88,6 +131,6 @@ export class Modal {
 
       //console.log(this.mouseMove.currentObjPos);
       //console.log(this.mouseMove.view.getObjectsUnderCursor(this.mouseMove.mouse));
-    });
+    });*/
   }
 }
