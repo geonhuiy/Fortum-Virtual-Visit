@@ -10,18 +10,28 @@ export class Modal {
   private main_scene: any;
   private mouseMove: MouseMove;
   private modalActive: boolean = false;
-  //private mesh: Mesh;
+  private meshObj: [Mesh];
 
+  // Adds a custom layer to the current scene for adding 3D objects
   public setLayer(iv: ApiInterface): void {
+    // Gets the main view and its scene
     this.main_view = iv.legacyApi.getMainView();
     this.main_scene = iv.legacyApi.getMainView().scene;
+
+    // Creating a custom layer
     this.layer = new Layer(this.main_view, this.main_view.scene);
+    // Adds custom layer to scene
     this.main_view.addToScene(this.layer);
   }
+
+  // Renders a 3D box into the scene using user-given dimensions
   public renderBox(): void {
+    // Fields from the dimensions modal
     var height = <HTMLInputElement>document.getElementById("height");
     var width = <HTMLInputElement>document.getElementById("width");
     var length = <HTMLInputElement>document.getElementById("length");
+
+    // Create box geometry with a set material
     var geo = new THREE.BoxGeometry(
       parseFloat(length.value),
       parseFloat(height.value),
@@ -33,6 +43,8 @@ export class Modal {
       opacity: 0.8,
     });
     this.mouseMove.mesh = new THREE.Mesh(geo, mat);
+
+    // Attaches the created box object to mouse cursor
     this.mouseMove.assignContainer();
   }
   public assignEventListeners(): void {
@@ -46,29 +58,35 @@ export class Modal {
       modalContainer.style.display = "none";
     });
 
+    // Dismissing modal if window clicked
     window.addEventListener("click", function (event) {
       if (event.target == modalContainer) {
         modalContainer.style.display = "none";
       }
     });
 
+    // Creates box when form is submitted
     dimensionForm.addEventListener("submit", (event) => {
       event.preventDefault();
       this.renderBox();
       modalContainer.style.display = "none";
       this.main_scene.add(this.mouseMove.mesh);
     });
+
+    // Adds a listener to the NavVis API container
     container.addEventListener("click", (event) => {
+      // Checks if there is a mesh (3D object) present
       if (this.mouseMove.mesh != null) {
+        // Updates mouse cursor position via raycast
         this.mouseMove.currentObjPos = this.mouseMove.view.getObjectsUnderCursor(
           this.mouseMove.mouse
         )[0].point;
+        // Sets the position of the mesh when clicked
         this.mouseMove.mesh.position.set(
           this.main_view.getCurrentCursorPosition().location.x,
           this.main_view.getCurrentCursorPosition().location.y,
           this.main_view.getCurrentCursorPosition().location.z,
         );
-        this.main_scene.add(this.mouseMove.mesh);
         this.mouseMove.mesh = null;
         this.mouseMove.removeListener();
         console.log(
@@ -79,8 +97,6 @@ export class Modal {
             "," +
             this.mouseMove.currentObjPos.z
         );
-        //console.log(this.main_view.scene);
-        //console.log(this.main_view.getCurrentCursorPosition());
       }
     });
   }

@@ -24,7 +24,6 @@ export class SideBarMenuModifier {
   };
 
   private callbackFunction(): void {
-    //window.alert("Button works");
     document.getElementById("modal-container").style.display = "block";
     this.ivApi.ui.sidebarMenuService.closeMenu();
   }

@@ -18,8 +18,13 @@ export class MouseMove {
   public setEventHandler = (event: any) => {
     this.onMouseMove(event);
   };
+
+  public setClickEventHandler = (event: any) => {
+    this.mouseClicked(event);
+  }
   public assignContainer() {
     this.container.addEventListener("mousemove", this.setEventHandler);
+    //this.container.addEventListener("mousedown", this.setClickEventHandler);
     console.log("Added mouse listener");
   }
   public removeListener() {
@@ -32,18 +37,40 @@ export class MouseMove {
     this.mouse.y = (event.clientY / window.innerHeight) * 2 - 1;
     this.raycast.setFromCamera(this.mouse, this.raycast.camera);
     var intersects = this.raycast.intersectObjects(this.view.scene.children)[0];
-    if (intersects) {
-      console.log(intersects);
-      //intersects.object.visible = false;
-    }
-
     this.currentObjPos = this.view.getObjectsUnderCursor(this.mouse)[0].point;
-    //this.mesh.position.copy(this.currentObjPos);
-    this.mesh.position.set(
-      this.view.getCurrentCursorPosition().location.x,
-      this.view.getCurrentCursorPosition().location.y,
-      this.view.getCurrentCursorPosition().location.z,
-    );
+    if (this.mesh != null) {
+      this.mesh.position.set(
+        this.view.getCurrentCursorPosition().location.x,
+        this.view.getCurrentCursorPosition().location.y,
+        this.view.getCurrentCursorPosition().location.z
+      );
+    }
+    if (intersects) {
+
+    }
     //console.log(this.currentObjPos);
   }
+
+  public objectRotate() {
+
+  }
+
+  public mouseClicked(event: any) {
+    switch(event.button) {
+      case 0:
+        //LMB
+        console.log("Left mouse clicked");
+        break;
+      case 1:
+        //MMB
+        console.log("Middle mouse clicked");
+        break;
+      case 2:
+        //RMB
+        console.log("Right mouse clicked");
+        break;
+    }
+  }
 }
+
+

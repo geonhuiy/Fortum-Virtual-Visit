@@ -15,6 +15,7 @@ class TestApp
 		getApi("https://nvdev-0.iv.navvis.com/")
 			.then((iv: ApiInterface) =>
 			{
+				// 1. Instantiate necessary objects, assign event listeners on modal.ts
 				this.modal = new Modal();
 				this.ivApi = iv;
 				this.modal.setLayer(this.ivApi);
