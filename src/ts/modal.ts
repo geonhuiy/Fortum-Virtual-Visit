@@ -43,6 +43,7 @@ export class Modal {
       opacity: 0.8,
     });
     this.mouseMove.mesh = new THREE.Mesh(geo, mat);
+    console.log(this.main_scene);
 
     // Attaches the created box object to mouse cursor
     this.mouseMove.assignContainer();

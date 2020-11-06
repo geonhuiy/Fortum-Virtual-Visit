@@ -4,6 +4,11 @@ import {
 } from "@navvis/indoorviewer";
 import * as THREE from "three";
 import { Modal } from "./modal";
+declare global {
+  interface Window {
+    IV: any;
+  }
+}
 export class MouseMove {
   mouse: any;
   raycast: THREE.Raycaster;
@@ -24,6 +29,7 @@ export class MouseMove {
   }
   public assignContainer() {
     this.container.addEventListener("mousemove", this.setEventHandler);
+    this.container.addEventListener("mousedown", this.setClickEventHandler);
     //this.container.addEventListener("mousedown", this.setClickEventHandler);
     console.log("Added mouse listener");
   }
@@ -35,6 +41,7 @@ export class MouseMove {
     this.mouse = new THREE.Vector3();
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = (event.clientY / window.innerHeight) * 2 - 1;
+    var geoService = window.IV.injector.get('GeoTransformationService');
     this.raycast.setFromCamera(this.mouse, this.raycast.camera);
     var intersects = this.raycast.intersectObjects(this.view.scene.children)[0];
     this.currentObjPos = this.view.getObjectsUnderCursor(this.mouse)[0].point;
@@ -45,15 +52,9 @@ export class MouseMove {
         this.view.getCurrentCursorPosition().location.z
       );
     }
-    if (intersects) {
-
-    }
     //console.log(this.currentObjPos);
   }
 
-  public objectRotate() {
-
-  }
 
   public mouseClicked(event: any) {
     switch(event.button) {
@@ -67,6 +68,11 @@ export class MouseMove {
         break;
       case 2:
         //RMB
+        this.raycast.setFromCamera(this.mouse, this.raycast.camera);
+        var intersects = this.raycast.intersectObjects(this.view.scene.children)[0];
+        if(intersects) {
+          console.log(intersects);
+        }
         console.log("Right mouse clicked");
         break;
     }
