@@ -1,7 +1,7 @@
 import { ApiInterface, SceneLayerConfigInterface } from "@navvis/indoorviewer";
 import { Layer } from "./layer";
 import * as THREE from "three";
-import { MouseMove } from "./mouseMove";
+import { MouseMove } from "./mouse";
 import { Mesh } from "three";
 
 export class Modal {
@@ -9,14 +9,15 @@ export class Modal {
   private main_view: any;
   private main_scene: any;
   private mouseMove: MouseMove;
-  private modalActive: boolean = false;
-  private meshObj: [Mesh];
-
+  private ivApi: ApiInterface;
+  constructor(iv: ApiInterface) {
+    this.ivApi = iv;
+  }
   // Adds a custom layer to the current scene for adding 3D objects
-  public setLayer(iv: ApiInterface): void {
+  public setLayer(): void {
     // Gets the main view and its scene
-    this.main_view = iv.legacyApi.getMainView();
-    this.main_scene = iv.legacyApi.getMainView().scene;
+    this.main_view = this.ivApi.legacyApi.getMainView();
+    this.main_scene = this.ivApi.legacyApi.getMainView().scene;
 
     // Creating a custom layer
     this.layer = new Layer(this.main_view, this.main_view.scene);

@@ -3,7 +3,7 @@ import {ApiInterface, getApi} from "@navvis/indoorviewer";
 import { SideBarMenuModifier } from "./ts/SideBarMenuModifier";
 import { Modal } from "./ts/modal";
 import { Layer } from "./ts/layer";
-import { MouseMove } from "./ts/mouseMove";
+import { MouseMove } from "./ts/mouse";
 class TestApp
 {
 	public ivApi: ApiInterface;
@@ -16,12 +16,11 @@ class TestApp
 			.then((iv: ApiInterface) =>
 			{
 				// 1. Instantiate necessary objects, assign event listeners on modal.ts
-				this.modal = new Modal();
-				this.ivApi = iv;
-				this.modal.setLayer(this.ivApi);
+				this.modal = new Modal(iv);
+				//this.ivApi = iv;
+				this.modal.setLayer();
 				this.modal.assignEventListeners();
 				new SideBarMenuModifier(iv);
-				console.log("Log");
 			});
 	}
 }
