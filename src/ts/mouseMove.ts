@@ -41,7 +41,6 @@ export class MouseMove {
     this.mouse = new THREE.Vector3();
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = (event.clientY / window.innerHeight) * 2 - 1;
-    var geoService = window.IV.injector.get('GeoTransformationService');
     this.raycast.setFromCamera(this.mouse, this.raycast.camera);
     var intersects = this.raycast.intersectObjects(this.view.scene.children)[0];
     this.currentObjPos = this.view.getObjectsUnderCursor(this.mouse)[0].point;

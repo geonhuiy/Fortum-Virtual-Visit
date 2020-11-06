@@ -3,7 +3,6 @@ import {ApiInterface, getApi} from "@navvis/indoorviewer";
 import { SideBarMenuModifier } from "./ts/SideBarMenuModifier";
 import { Modal } from "./ts/modal";
 import { Layer } from "./ts/layer";
-import { MouseMove } from "./ts/mouse";
 import { CustomMenuLayer } from "./ts/CustomMenuLayer";
 class TestApp
 {

@@ -1,7 +1,7 @@
 import { ApiInterface, SceneLayerConfigInterface } from "@navvis/indoorviewer";
 import { Layer } from "./layer";
 import * as THREE from "three";
-import { MouseMove } from "./mouse";
+import { MouseMove } from "./mouseMove";
 import { Mesh } from "three";
 
 export class Modal {
@@ -79,26 +79,19 @@ export class Modal {
     container.addEventListener("click", (event) => {
       // Checks if there is a mesh (3D object) present
       if (this.mouseMove.mesh != null) {
-        // Updates mouse cursor position via raycast
-        this.mouseMove.currentObjPos = this.mouseMove.view.getObjectsUnderCursor(
-          this.mouseMove.mouse
-        )[0].point;
-        // Sets the position of the mesh when clicked
-        this.mouseMove.mesh.position.set(
-          this.main_view.getCurrentCursorPosition().location.x,
-          this.main_view.getCurrentCursorPosition().location.y,
-          this.main_view.getCurrentCursorPosition().location.z,
-        );
-        this.mouseMove.mesh = null;
-        this.mouseMove.removeListener();
-        console.log(
-          "Mesh added at " +
-            this.mouseMove.currentObjPos.x +
-            "," +
-            this.mouseMove.currentObjPos.y +
-            "," +
-            this.mouseMove.currentObjPos.z
-        );
+        // Only places the object with CTRL + LMB
+        if (event.ctrlKey) {
+          this.mouseMove.removeListener();
+          this.mouseMove.mesh = null;
+          console.log(
+            "Mesh added at " +
+              this.mouseMove.currentObjPos.x +
+              "," +
+              this.mouseMove.currentObjPos.y +
+              "," +
+              this.mouseMove.currentObjPos.z
+          );
+        }
       }
     });
   }
