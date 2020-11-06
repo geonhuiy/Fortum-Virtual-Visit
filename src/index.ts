@@ -4,6 +4,7 @@ import { SideBarMenuModifier } from "./ts/SideBarMenuModifier";
 import { Modal } from "./ts/modal";
 import { Layer } from "./ts/layer";
 import { MouseMove } from "./ts/mouse";
+import { CustomMenuLayer } from "./ts/CustomMenuLayer";
 class TestApp
 {
 	public ivApi: ApiInterface;
@@ -21,6 +22,7 @@ class TestApp
 				this.modal.setLayer();
 				this.modal.assignEventListeners();
 				new SideBarMenuModifier(iv);
+				new CustomMenuLayer(iv.legacyApi.getMainView());
 			});
 	}
 }
