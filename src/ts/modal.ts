@@ -18,7 +18,6 @@ export class Modal {
     // Gets the main view and its scene
     this.main_view = this.ivApi.legacyApi.getMainView();
     this.main_scene = this.ivApi.legacyApi.getMainView().scene;
-
     // Creating a custom layer
     this.layer = new Layer(this.main_view, this.main_view.scene);
     // Adds custom layer to scene
@@ -44,8 +43,6 @@ export class Modal {
       opacity: 0.8,
     });
     this.mouseMove.mesh = new THREE.Mesh(geo, mat);
-    console.log(this.main_scene);
-
     // Attaches the created box object to mouse cursor
     this.mouseMove.assignContainer();
   }
@@ -55,7 +52,7 @@ export class Modal {
     var closeButton = document.getElementsByClassName("close")[0];
     var dimensionForm = document.getElementById("dimensions");
     var container = document.getElementById("indoorviewer");
-
+    this.mouseMove.assignDetectionListener();
     closeButton.addEventListener("click", function () {
       modalContainer.style.display = "none";
     });
@@ -83,14 +80,6 @@ export class Modal {
         if (event.ctrlKey) {
           this.mouseMove.removeListener();
           this.mouseMove.mesh = null;
-          console.log(
-            "Mesh added at " +
-              this.mouseMove.currentObjPos.x +
-              "," +
-              this.mouseMove.currentObjPos.y +
-              "," +
-              this.mouseMove.currentObjPos.z
-          );
         }
       }
     });

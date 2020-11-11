@@ -23,15 +23,16 @@ export class MouseMove {
   public setEventHandler = (event: any) => {
     this.onMouseMove(event);
   };
-
   public setClickEventHandler = (event: any) => {
     this.mouseClicked(event);
-  }
+  };
   public assignContainer() {
     this.container.addEventListener("mousemove", this.setEventHandler);
-    this.container.addEventListener("mousedown", this.setClickEventHandler);
     //this.container.addEventListener("mousedown", this.setClickEventHandler);
     console.log("Added mouse listener");
+  }
+  public assignDetectionListener() {
+    this.container.addEventListener("mousedown", this.setClickEventHandler);
   }
   public removeListener() {
     this.container.removeEventListener("mousemove", this.setEventHandler);
@@ -40,9 +41,8 @@ export class MouseMove {
   public onMouseMove(event: any) {
     this.mouse = new THREE.Vector3();
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.mouse.y = (event.clientY / window.innerHeight) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     this.raycast.setFromCamera(this.mouse, this.raycast.camera);
-    var intersects = this.raycast.intersectObjects(this.view.scene.children)[0];
     this.currentObjPos = this.view.getObjectsUnderCursor(this.mouse)[0].point;
     if (this.mesh != null) {
       this.mesh.position.set(
@@ -54,9 +54,8 @@ export class MouseMove {
     //console.log(this.currentObjPos);
   }
 
-
   public mouseClicked(event: any) {
-    switch(event.button) {
+    switch (event.button) {
       case 0:
         //LMB
         console.log("Left mouse clicked");
@@ -67,15 +66,23 @@ export class MouseMove {
         break;
       case 2:
         //RMB
+        this.mouse = new THREE.Vector3();
+        this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
         this.raycast.setFromCamera(this.mouse, this.raycast.camera);
-        var intersects = this.raycast.intersectObjects(this.view.scene.children)[0];
-        if(intersects) {
+        var intersects = this.raycast.intersectObjects(
+          this.view.scene.children
+        )[0];
+        if (intersects) {
           console.log(intersects);
         }
+        this.currentObjPos = this.view.getObjectsUnderCursor(
+          this.mouse
+        )[0].point;
+        console.log(this.currentObjPos);
+
         console.log("Right mouse clicked");
         break;
     }
   }
 }
-
-
