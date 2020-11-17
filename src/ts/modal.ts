@@ -1,8 +1,6 @@
 import { ApiInterface, SceneLayerConfigInterface } from "@navvis/indoorviewer";
 import { Layer } from "./layer";
-import * as THREE from "three";
 import { MouseMove } from "./mouseMove";
-import { Mesh } from "three";
 
 export class Modal {
   private layer: Layer;

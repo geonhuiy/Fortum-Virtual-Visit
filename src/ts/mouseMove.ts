@@ -1,7 +1,9 @@
 import { MainViewInterface, CustomLayer } from "@navvis/indoorviewer";
 import * as THREE from "three";
 import { TubeBufferGeometry } from "three";
-//import { CustomMenuLayer } from "./CustomMenuLayer";
+import { ModelContext } from "./ModelContext";
+import { ContextMenuManager } from "./ContextMenuManager";
+import { CustomMenuLayer } from "./CustomMenuLayer";
 declare global {
   interface Window {
     IV: any;
@@ -15,9 +17,17 @@ export class MouseMove {
   currentObjPos: THREE.Vector3;
   mesh: THREE.Mesh = null;
   box: THREE.Box3;
+  contextMenuMgr: ContextMenuManager;
+  modelContextMenu: ModelContext;
+  defaultContextMenu: CustomMenuLayer;
+
   constructor(raycaster: THREE.Raycaster, view: MainViewInterface) {
     this.raycast = raycaster;
     this.view = view;
+  }
+
+  public initContextMenu() {
+    this.contextMenuMgr = new ContextMenuManager(this.view, false);
   }
   // Renders a 3D box into the scene using user-given dimensions
   public renderBox(): void {
@@ -57,6 +67,7 @@ export class MouseMove {
     console.log("Added mouse listener");
   }
   public assignDetectionListener() {
+    this.initContextMenu();
     this.container.addEventListener("mousedown", this.setClickEventHandler);
   }
   public removeListener() {
@@ -68,8 +79,6 @@ export class MouseMove {
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     this.raycast.setFromCamera(this.mouse, this.raycast.camera);
-    var model = this.view.getObjectsUnderCursor(this.mouse)[0].object.geometry
-      .boundingbox;
     if (this.mesh != null) {
       this.mesh.position.set(
         this.view.getCurrentCursorPosition().location.x,
@@ -78,6 +87,10 @@ export class MouseMove {
       );
     }
     //console.log(this.currentObjPos);
+  }
+
+  public onMouseDown(event:any) {
+
   }
 
   public mouseClicked(event: any) {
@@ -101,12 +114,12 @@ export class MouseMove {
         )[0];
         if (intersects) {
           console.log(intersects);
+          this.contextMenuMgr.modelContextActive = true;
+          intersects.object.rotation.x += 90;
         }
-        this.currentObjPos = this.view.getObjectsUnderCursor(this.mouse)[0];
-        console.log(this.currentObjPos);
-        console.log(this.view.getCurrentCursorPosition());
-
-        console.log("Right mouse clicked");
+        else {
+          this.contextMenuMgr.modelContextActive = false;
+        }
         break;
     }
   }

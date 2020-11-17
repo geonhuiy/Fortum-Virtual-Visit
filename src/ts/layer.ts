@@ -1,8 +1,5 @@
 import {
-  AbstractViewInterface,
   CustomLayer,
-  MainViewInterface,
-  SceneLayerConfigInterface,
 } from "@navvis/indoorviewer";
 import * as THREE from "three";
 import { MouseMove } from "./mouseMove";
