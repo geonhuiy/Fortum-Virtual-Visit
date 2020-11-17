@@ -76,10 +76,20 @@ class TestApp {
 						let distanceY = this.fP.y - this.fP2.y;
 						let distanceX = this.fP.z - this.fP2.z;
 
-						console.log("X: ",distanceX);
-						console.log("Y: ",distanceY);
-						console.log("Z: ",distanceZ);
+						if(distanceX <= 0){
+							distanceX *= -1;
+						  }
+						  if(distanceY <= 0){
+							distanceY *= -1;
+						  }
+						  if(distanceZ <= 0){
+							distanceZ *= -1;
+						  }
 
+						console.log("distanceX   Y: ",distanceX);
+						console.log("distanceY X: ",distanceY);
+						console.log("distanceZ Z: ",distanceZ);
+					
 						clicked = false;
 					}
 				});

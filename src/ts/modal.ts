@@ -11,6 +11,10 @@ export class Modal {
   private mouseMove: MouseMove;
   private mesh: Mesh;
 
+  public fP: any;
+	public fP2: any;
+
+
   public setLayer(iv: ApiInterface): void {
     this.main_view = iv.legacyApi.getMainView();
     //console.log(this.main_view);
@@ -45,7 +49,13 @@ export class Modal {
     var closeButton = document.getElementsByClassName("close")[0];
     var dimensionForm = document.getElementById("dimensions");
     var container = document.getElementById("indoorviewer");
-    //console.log(this.main_view);
+   
+
+    	//mouse click points x,y,z in meters
+        this.fP = null; //First Click
+				this.fP2 = null; //Second Click
+		
+				var clicked = false; //reset button
 
     closeButton.addEventListener("click", function () {
       modalContainer.style.display = "none";
@@ -57,65 +67,106 @@ export class Modal {
       }
     });
 
-    container.addEventListener("click", function (event) {
-      /*
-      console.log("X: ",this.main_view.getCurrentCursorPosition().location.x);
-      console.log("Y: ",this.main_view.getCurrentCursorPosition().location.y);
-      console.log("Z: ",this.main_view.getCurrentCursorPosition().location.z);
-      */
-    });
-
-    container.addEventListener("click", (event) => {
-
-  const point = this.main_view.getCurrentCursorPosition().geometry.coordinates;
-
-    // console.log("datasetLocation: ",this.main_view.getCurrentCursorPosition().geometry.coordinates);
-   //  let room = this.main_view.api.siteModel.repository
-  //  .findClosestByTypeAndDistance2D(this.main_view.api.siteModel.types.ROOM, point, 5);
-    // console.log(this.main_view.siteModel);
-   //  console.log("point: ",point);
-
- //    console.log("datasetLocation: ",this.main_view.getCurrentCursorPosition().location);
-    //  console.log("GeoTransformationService: ",this.main_view.layerLocationMarker.GeoTransformationService.TransformService);
-    //  console.log("Y: ",this.main_view.getCurrentCursorPosition().location.y);
-    //  console.log("Z: ",this.main_view.getCurrentCursorPosition().location.z);
-     /* if (this.mesh != null) {
-        this.mouseMove.currentObjPos = this.mouseMove.view.getObjectsUnderCursor(
-          this.mouseMove.mouse
-        )[0].point;
-  
-        this.main_scene.add(this.mesh);
-        this.mesh = null;
-
-        console.log(this.main_view.scene);
-        console.log(this.main_view.getCurrentCursorPosition());
-      }*/
-
-      //console.log(this.mouseMove.currentObjPos);
-      //console.log(this.mouseMove.view.getObjectsUnderCursor(this.mouseMove.mouse));
-    });
-
-
     dimensionForm.addEventListener("submit", (event) => {
       event.preventDefault();
       this.renderBox();
       modalContainer.style.display = "none";
     });
 
-   /* container.addEventListener("click", (event) => {
+    container.addEventListener("click", (event) => {
       if (this.mesh != null) {
         this.mouseMove.currentObjPos = this.mouseMove.view.getObjectsUnderCursor(
           this.mouseMove.mouse
         )[0].point;
+
+        var point2 = this.main_view.getCurrentCursorPosition().datasetLocation;
+
+        var meshSize = this.mesh.geometry.toJSON();
+       
+     //   console.log("mesh depth: ",meshSize.depth);
+     //   console.log("mesh height: ",meshSize.height);
+    //    console.log("mesh width: ",meshSize.width);
+
+      // Half of the cube size
+        let mHeight = meshSize.height/2;
+        let mWidth = meshSize.depth/2;
+        let mLength = meshSize.width/2;
+
+      //  this.fP = point2;
+    	if(clicked == false){
+
+        this.fP = point2;
+
+        clicked = true;
+
+      }else{ //After first click calculate distances and create cube based on them
+ 
+        this.fP2 = point2;
+
+        //Checking the distance between walls, floors in meters...
+        let distanceZ = this.fP.x - this.fP2.x;
+        let distanceX = this.fP.y - this.fP2.y;
+        let distanceY = this.fP.z - this.fP2.z;
+
+        //turn them to positive 
+        if(distanceX <= 0){
+          distanceX *= -1;
+          }
+          if(distanceY <= 0){
+          distanceY *= -1;
+          }
+          if(distanceZ <= 0){
+          distanceZ *= -1;
+          }
+
+       //Check if mouse is on the floor or at the roof and based on that make it either pos or negative
+          console.log("this.main_view.getCurrentCursorPosition().datasetLocation ",
+          this.main_view.getCurrentCursorPosition().datasetLocation);
+       if(this.main_view.getCurrentCursorPosition().location.y<1){
+         if(mHeight<0){
+            mHeight *= -1;
+         }
+          
+        }
+        console.log("mHeigh: ",mHeight);
+        //Calculate distance between empty space and cube
+        var emptySpaceY = distanceY - mHeight;
+        console.log("distanceY: ",distanceY);
+        console.log("cubemptySpaceYeY: ",emptySpaceY);
+
+        //check if cube goes over empty space
+     
+      
+   //     var y1 = this.main_view.getCurrentCursorPosition().location.y-mHeight;
+    //    var y2 = y1+this.fP2.y;
+   //     console.log("Rest of y: "+y2);
+/*
+        console.log("distanceX: ",distanceX);
+        console.log("distanceY Y: ",distanceY);
+        console.log("distanceZ Z: ",distanceZ);
+        
+    */
+
         this.mesh.position.set(
-          this.main_view.getCurrentCursorPosition().location.x,
-          this.main_view.getCurrentCursorPosition().location.y,
-          this.main_view.getCurrentCursorPosition().location.z,
+          this.main_view.getCurrentCursorPosition().location.x-mWidth,
+          this.main_view.getCurrentCursorPosition().location.y-mHeight,
+          this.main_view.getCurrentCursorPosition().location.z-mLength,
         );
-        console.log("X: ",this.main_view.getCurrentCursorPosition().location.x);
+
+        var point2 = this.main_view.getCurrentCursorPosition().datasetLocation;
+        
+        var meshSize = this.mesh.geometry.toJSON();
+
+        console.log("mesh depth: ",meshSize.depth);
+        console.log("mesh height: ",meshSize.height);
+        console.log("mesh width: ",meshSize.width);
+
+
+      /*    console.log("X: ",this.main_view.getCurrentCursorPosition().location.x);
         console.log("Y: ",this.main_view.getCurrentCursorPosition().location.y);
-        console.log("Z: ",this.main_view.getCurrentCursorPosition().location.z);
+        console.log("Z: ",this.main_view.getCurrentCursorPosition().location.z);*/
         this.main_scene.add(this.mesh);
+    //    console.log("Mes h: ",this.mesh.geometry.toJSON());
         this.mesh = null;
         console.log(
           "Mesh added at " +
@@ -125,12 +176,20 @@ export class Modal {
             "," +
             this.mouseMove.currentObjPos.z
         );
+
         console.log(this.main_view.scene);
         console.log(this.main_view.getCurrentCursorPosition());
+
+       //reset clicks
+        clicked = false;
+      }
+
+
+       
       }
 
       //console.log(this.mouseMove.currentObjPos);
       //console.log(this.mouseMove.view.getObjectsUnderCursor(this.mouseMove.mouse));
-    });*/
+    });
   }
 }
