@@ -3,13 +3,12 @@ import {ApiInterface, getApi} from "@navvis/indoorviewer";
 import { SideBarMenuModifier } from "./ts/SideBarMenuModifier";
 import { Modal } from "./ts/modal";
 import { Layer } from "./ts/layer";
-import { CustomMenuLayer } from "./ts/CustomMenuLayer";
 class TestApp
 {
 	public ivApi: ApiInterface;
 	private modal: Modal;
 	public layer: Layer;
-
+	private main_view: any;
 	constructor()
 	{
 		getApi("https://nvdev-0.iv.navvis.com/")
@@ -20,8 +19,11 @@ class TestApp
 				//this.ivApi = iv;
 				this.modal.setLayer();
 				this.modal.assignEventListeners();
+				this.main_view = iv.legacyApi.getMainView();
+				//this.mouseMove = new MouseMove(this.main_view.raycaster, this.main_view);
+				//this.mouseMove.init();
 				new SideBarMenuModifier(iv);
-				new CustomMenuLayer(iv.legacyApi.getMainView());
+				//new CustomMenuLayer(iv.legacyApi.getMainView());
 			});
 	}
 }

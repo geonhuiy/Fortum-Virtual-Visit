@@ -1,18 +1,11 @@
 import {
-  AbstractViewInterface,
   CustomLayer,
-  MainViewInterface,
-  SceneLayerConfigInterface,
 } from "@navvis/indoorviewer";
 import * as THREE from "three";
-
+import { MouseMove } from "./mouseMove";
 
 export class Layer extends CustomLayer {
-  private main_view: any;
-  private main_scene: any;
-  constructor(view: any, scene: SceneLayerConfigInterface) {
-    super(view, scene);
-    this.main_view = view;
-    this.main_scene = scene;
+  constructor(view: any, mm: MouseMove) {
+    super(view);
   }
 }

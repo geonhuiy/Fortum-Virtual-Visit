@@ -1,8 +1,6 @@
 import { ApiInterface, SceneLayerConfigInterface } from "@navvis/indoorviewer";
 import { Layer } from "./layer";
-import * as THREE from "three";
 import { MouseMove } from "./mouseMove";
-import { Mesh } from "three";
 
 export class Modal {
   private layer: Layer;
@@ -17,37 +15,15 @@ export class Modal {
   public setLayer(): void {
     // Gets the main view and its scene
     this.main_view = this.ivApi.legacyApi.getMainView();
-    this.main_scene = this.ivApi.legacyApi.getMainView().scene;
+    this.main_scene = this.main_view.scene;
+    this.mouseMove = new MouseMove(this.main_view.raycaster, this.main_view);
     // Creating a custom layer
-    this.layer = new Layer(this.main_view, this.main_view.scene);
+    this.layer = new Layer(this.main_view, this.mouseMove);
     // Adds custom layer to scene
     this.main_view.addToScene(this.layer);
   }
 
-  // Renders a 3D box into the scene using user-given dimensions
-  public renderBox(): void {
-    // Fields from the dimensions modal
-    var height = <HTMLInputElement>document.getElementById("height");
-    var width = <HTMLInputElement>document.getElementById("width");
-    var length = <HTMLInputElement>document.getElementById("length");
-
-    // Create box geometry with a set material
-    var geo = new THREE.BoxGeometry(
-      parseFloat(length.value),
-      parseFloat(height.value),
-      parseFloat(width.value)
-    );
-    var mat = new THREE.MeshLambertMaterial({
-      color: 0xffff00,
-      transparent: true,
-      opacity: 0.8,
-    });
-    this.mouseMove.mesh = new THREE.Mesh(geo, mat);
-    // Attaches the created box object to mouse cursor
-    this.mouseMove.assignContainer();
-  }
   public assignEventListeners(): void {
-    this.mouseMove = new MouseMove(this.main_view.raycaster, this.main_view);
     var modalContainer = document.getElementById("modal-container");
     var closeButton = document.getElementsByClassName("close")[0];
     var dimensionForm = document.getElementById("dimensions");
@@ -67,9 +43,13 @@ export class Modal {
     // Creates box when form is submitted
     dimensionForm.addEventListener("submit", (event) => {
       event.preventDefault();
-      this.renderBox();
+      this.mouseMove.renderBox();
       modalContainer.style.display = "none";
       this.main_scene.add(this.mouseMove.mesh);
+      this.mouseMove.mesh.rotation.x = 0;
+      this.mouseMove.mesh.rotation.y = 0;
+      this.mouseMove.mesh.rotation.z = 0;
+      console.log(this.layer);
     });
 
     // Adds a listener to the NavVis API container
@@ -78,6 +58,9 @@ export class Modal {
       if (this.mouseMove.mesh != null) {
         // Only places the object with CTRL + LMB
         if (event.ctrlKey) {
+          this.mouseMove.mesh.position.copy(
+            this.main_view.getCurrentCursorPosition().location
+          );
           this.mouseMove.removeListener();
           this.mouseMove.mesh = null;
         }
