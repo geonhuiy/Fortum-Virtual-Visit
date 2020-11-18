@@ -1,9 +1,7 @@
 import { MainViewInterface, CustomLayer } from "@navvis/indoorviewer";
 import * as THREE from "three";
 import { TubeBufferGeometry } from "three";
-import { ModelContext } from "./ModelContext";
 import { ContextMenuManager } from "./ContextMenuManager";
-import { CustomMenuLayer } from "./CustomMenuLayer";
 declare global {
   interface Window {
     IV: any;
@@ -18,8 +16,7 @@ export class MouseMove {
   mesh: THREE.Mesh = null;
   box: THREE.Box3;
   contextMenuMgr: ContextMenuManager;
-  modelContextMenu: ModelContext;
-  defaultContextMenu: CustomMenuLayer;
+  intersect: THREE.Intersection;
 
   constructor(raycaster: THREE.Raycaster, view: MainViewInterface) {
     this.raycast = raycaster;
@@ -27,7 +24,11 @@ export class MouseMove {
   }
 
   public initContextMenu() {
-    this.contextMenuMgr = new ContextMenuManager(this.view, false);
+    this.contextMenuMgr = new ContextMenuManager(this.view, false, this);
+  }
+
+  public removeObject() {
+    //this.view.scene.remove(this.intersect);
   }
   // Renders a 3D box into the scene using user-given dimensions
   public renderBox(): void {
@@ -55,6 +56,13 @@ export class MouseMove {
     // Attaches the created box object to mouse cursor
     this.assignContainer();
   }
+
+  public deleteModel(view: any, obj: any) {
+    view.scene.remove(obj.object);
+    obj.object.geometry.dispose();
+    obj.object.material.dispose();
+  }
+
   public setEventHandler = (event: any) => {
     this.onMouseMove(event);
   };
@@ -109,13 +117,14 @@ export class MouseMove {
         this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
         this.raycast.setFromCamera(this.mouse, this.raycast.camera);
-        var intersects = this.raycast.intersectObjects(
+        this.intersect = this.raycast.intersectObjects(
           this.view.scene.children
         )[0];
-        if (intersects) {
-          console.log(intersects);
+        if (this.intersect) {
+          console.log(this.intersect);
+          this.contextMenuMgr.setVar(this.view, this.intersect)
           this.contextMenuMgr.modelContextActive = true;
-          intersects.object.rotation.x += 90;
+          //this.intersect.object.rotation.x += 90;
         }
         else {
           this.contextMenuMgr.modelContextActive = false;

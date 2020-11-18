@@ -1,32 +1,44 @@
 import { CustomLayer, MainViewInterface } from "@navvis/indoorviewer";
+import { MouseMove } from "./mouseMove";
+
 export class ContextMenuManager extends CustomLayer {
   public modelContextActive: boolean = false;
-  constructor(view: MainViewInterface, isActive: boolean) {
+  private mouseMove: MouseMove;
+  public object: any;
+
+  constructor(view: MainViewInterface, isActive: boolean, mm: MouseMove) {
     super(view);
     this.modelContextActive = isActive;
+    this.mouseMove = mm;
   }
   public onContextMenu() {
     if (this.modelContextActive) {
       return [
         {
           name: "Rotate",
-          icon: "fa-globe",
+          icon: "fa-level-up",
           callback: function () {
-            // Action for when the menu item is clicked
-            window.open("https://www.navvis.com", "_blank");
           },
         },
         {
-          name: "Rotate",
-          icon: "fa-globe",
-          callback: function () {
-            // Action for when the menu item is clicked
-            window.open("https://www.navvis.com", "_blank");
-          },
+          name: "Remove",
+          icon: "fa-close",
+          callback: this.removeObject,
         },
       ];
     } else {
       return undefined;
     }
   }
+
+  public removeObject = () => {
+      this.mouseMove.deleteModel(this.view, this.object);
+  }
+
+  public setVar(view: any, object: any) {
+      this.view = view;
+      this.object = object;
+  }
 }
+
+

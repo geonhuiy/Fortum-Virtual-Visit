@@ -46,6 +46,9 @@ export class Modal {
       this.mouseMove.renderBox();
       modalContainer.style.display = "none";
       this.main_scene.add(this.mouseMove.mesh);
+      this.mouseMove.mesh.rotation.x = 0;
+      this.mouseMove.mesh.rotation.y = 0;
+      this.mouseMove.mesh.rotation.z = 0;
       console.log(this.layer);
     });
 
