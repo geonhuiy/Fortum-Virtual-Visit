@@ -56,6 +56,24 @@ export class Modal {
       // Checks if there is a mesh (3D object) present
       if (this.mouseMove.mesh != null) {
         // Only places the object with CTRL + LMB
+
+        var point2 = this.main_view.getCurrentCursorPosition().datasetLocation;
+   
+    //    var meshSize = this.mesh.geometry.toJSON();
+       
+     //   console.log("mesh depth: ",meshSize.depth);
+     //   console.log("mesh height: ",meshSize.height);
+    //    console.log("mesh width: ",meshSize.width);
+
+      // Half of the cube size
+    /*    let mHeight = meshSize.height/2;
+        let mWidth = meshSize.depth/2;
+        let mLength = meshSize.width/2;
+*/
+      //  this.fP = point2;
+
+
+
         if (event.ctrlKey) {
           this.mouseMove.mesh.position.copy(
             this.main_view.getCurrentCursorPosition().location

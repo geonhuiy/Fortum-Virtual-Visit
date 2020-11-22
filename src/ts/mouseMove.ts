@@ -1,6 +1,7 @@
 import { MainViewInterface, CustomLayer } from "@navvis/indoorviewer";
 import * as THREE from "three";
 import { TubeBufferGeometry } from "three";
+
 //import { CustomMenuLayer } from "./CustomMenuLayer";
 declare global {
   interface Window {
@@ -15,9 +16,14 @@ export class MouseMove {
   currentObjPos: THREE.Vector3;
   mesh: THREE.Mesh = null;
   box: THREE.Box3;
+  public fP: any;
+  public fP2: any;
+  
   constructor(raycaster: THREE.Raycaster, view: MainViewInterface) {
     this.raycast = raycaster;
     this.view = view;
+    this.fP = null; //First Click
+    this.fP2 = null; //Second Click
   }
   // Renders a 3D box into the scene using user-given dimensions
   public renderBox(): void {
@@ -55,6 +61,8 @@ export class MouseMove {
     this.container.addEventListener("mousemove", this.setEventHandler);
     //this.container.addEventListener("mousedown", this.setClickEventHandler);
     console.log("Added mouse listener");
+    
+
   }
   public assignDetectionListener() {
     this.container.addEventListener("mousedown", this.setClickEventHandler);
@@ -68,8 +76,46 @@ export class MouseMove {
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     this.raycast.setFromCamera(this.mouse, this.raycast.camera);
-    var model = this.view.getObjectsUnderCursor(this.mouse)[0].object.geometry
-      .boundingbox;
+    //this.raycast.setFromCamera(this.mouse, this.raycast.camera);
+    var intersects = this.raycast.intersectObjects(
+      this.view.scene.children
+    )[0];
+    if (intersects) {
+      //console.log(intersects);
+      console.log(intersects.object.position);
+    }
+  // var model = this.view.getObjectsUnderCursor(this.mouse)[0].object;
+
+ //  var meshSize2 = model.geometry.toJSON();
+ //var model = this.view.getObjectsUnderCursor(this.mouse)[0].object;
+    // console.log("poinmodelt2: ",model);
+  //    console.log("meshSize2: ",meshSize2.data);
+   
+
+     var point2 = this.view.getCurrentCursorPosition().datasetLocation;
+    console.log("point2: ",point2);
+
+//  var meshSize = this.mesh.geometry.toJSON();
+ 
+//   console.log("mesh depth: ",meshSize.depth);
+//   console.log("mesh height: ",meshSize.height);
+//    console.log("mesh width: ",meshSize.width);
+
+//let posY = this.view.getCurrentCursorPosition().location.z;
+
+
+// Half of the cube size
+ /* let mHeight = meshSize.height/2;
+  let mWidth = meshSize.depth/2;
+  let mLength = meshSize.width/2;
+
+  if(point2.z < 1){
+    posY+mHeight;
+  }else{
+    posY-mHeight;
+  }*/
+ //console.log("posY: ",posY);
+
     if (this.mesh != null) {
       this.mesh.position.set(
         this.view.getCurrentCursorPosition().location.x,
@@ -81,6 +127,22 @@ export class MouseMove {
   }
 
   public mouseClicked(event: any) {
+/*
+
+    var point2 = this.view.getCurrentCursorPosition().datasetLocation;
+    console.log("point2: ",point2);
+    this.raycast.setFromCamera(this.mouse, this.raycast.camera);
+    var intersects = this.raycast.intersectObjects(
+      this.view.scene.children
+    )[0];
+    if (intersects) {
+      console.log(intersects);
+    }
+*/
+/*
+    var point2 = this.view.getObjectsUnderCursor(this.mouse);
+    console.log("point2: ",point2);
+*/
     switch (event.button) {
       case 0:
         //LMB
@@ -91,6 +153,7 @@ export class MouseMove {
         console.log("Middle mouse clicked");
         break;
       case 2:
+        console.log("CASE 2? ");
         //RMB
         this.mouse = new THREE.Vector3();
         this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
