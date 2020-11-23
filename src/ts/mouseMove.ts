@@ -77,57 +77,70 @@ export class MouseMove {
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     this.raycast.setFromCamera(this.mouse, this.raycast.camera);
     //this.raycast.setFromCamera(this.mouse, this.raycast.camera);
-    var intersects = this.raycast.intersectObjects(
+ /*   var intersects = this.raycast.intersectObjects(
       this.view.scene.children
     )[0];
     if (intersects) {
       //console.log(intersects);
       console.log(intersects.object.position);
     }
-  // var model = this.view.getObjectsUnderCursor(this.mouse)[0].object;
 
- //  var meshSize2 = model.geometry.toJSON();
- //var model = this.view.getObjectsUnderCursor(this.mouse)[0].object;
-    // console.log("poinmodelt2: ",model);
-  //    console.log("meshSize2: ",meshSize2.data);
-   
+   */
 
      var point2 = this.view.getCurrentCursorPosition().datasetLocation;
     console.log("point2: ",point2);
 
-//  var meshSize = this.mesh.geometry.toJSON();
+  var meshSize = this.mesh.geometry.toJSON();
  
 //   console.log("mesh depth: ",meshSize.depth);
 //   console.log("mesh height: ",meshSize.height);
 //    console.log("mesh width: ",meshSize.width);
 
-//let posY = this.view.getCurrentCursorPosition().location.z;
+
 
 
 // Half of the cube size
- /* let mHeight = meshSize.height/2;
+ let mHeight = meshSize.height/2;
   let mWidth = meshSize.depth/2;
   let mLength = meshSize.width/2;
 
+  let posY = this.view.getCurrentCursorPosition().location.z;
+  let posX = this.view.getCurrentCursorPosition().location.y;
+
   if(point2.z < 1){
-    posY+mHeight;
+    posY +=mHeight;
   }else{
-    posY-mHeight;
-  }*/
+    posY -=mHeight;
+  }
+
+  if(point2.y > -2){
+    posX -=mLength;
+  }else{
+    posX +=mLength;
+  }
+
  //console.log("posY: ",posY);
 
     if (this.mesh != null) {
       this.mesh.position.set(
         this.view.getCurrentCursorPosition().location.x,
-        this.view.getCurrentCursorPosition().location.y,
-        this.view.getCurrentCursorPosition().location.z
+        posX,
+        posY
       );
     }
     //console.log(this.currentObjPos);
   }
 
   public mouseClicked(event: any) {
-/*
+
+    var model = this.view.getObjectsUnderCursor(this.mouse)[0].object;
+
+    var meshSize2 = model.geometry.toJSON();
+ // var model = this.view.getObjectsUnderCursor(this.mouse)[0].object;
+      console.log("poinmodelt2: ",model);
+    console.log("meshSize2: ",meshSize2);
+
+
 
     var point2 = this.view.getCurrentCursorPosition().datasetLocation;
     console.log("point2: ",point2);
@@ -136,14 +149,15 @@ export class MouseMove {
       this.view.scene.children
     )[0];
     if (intersects) {
-      console.log(intersects);
+      console.log("intersects:" ,intersects);
     }
-*/
+
 /*
     var point2 = this.view.getObjectsUnderCursor(this.mouse);
     console.log("point2: ",point2);
 */
     switch (event.button) {
+      
       case 0:
         //LMB
         console.log("Left mouse clicked");
