@@ -27,9 +27,6 @@ export class MouseMove {
     this.contextMenuMgr = new ContextMenuManager(this.view, false, this);
   }
 
-  public removeObject() {
-    //this.view.scene.remove(this.intersect);
-  }
   // Renders a 3D box into the scene using user-given dimensions
   public renderBox(): void {
     // Fields from the dimensions modal
@@ -61,6 +58,11 @@ export class MouseMove {
     view.scene.remove(obj.object);
     obj.object.geometry.dispose();
     obj.object.material.dispose();
+  }
+
+  public relocateObject(obj: any) {
+    this.mesh = obj.object;
+    this.assignContainer();
   }
 
   public setEventHandler = (event: any) => {
@@ -97,9 +99,7 @@ export class MouseMove {
     //console.log(this.currentObjPos);
   }
 
-  public onMouseDown(event:any) {
-
-  }
+  public onMouseDown(event: any) {}
 
   public mouseClicked(event: any) {
     switch (event.button) {
@@ -122,11 +122,9 @@ export class MouseMove {
         )[0];
         if (this.intersect) {
           console.log(this.intersect);
-          this.contextMenuMgr.setVar(this.view, this.intersect)
+          this.contextMenuMgr.setVar(this.view, this.intersect);
           this.contextMenuMgr.modelContextActive = true;
-          //this.intersect.object.rotation.x += 90;
-        }
-        else {
+        } else {
           this.contextMenuMgr.modelContextActive = false;
         }
         break;
