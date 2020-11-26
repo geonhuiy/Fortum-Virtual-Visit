@@ -17,6 +17,9 @@ export class MouseMove {
   box: THREE.Box3;
   contextMenuMgr: ContextMenuManager;
   intersect: THREE.Intersection;
+  rotateActive: Boolean = false;
+  objectOnMouse: Boolean = false;
+  isDragging: Boolean = false;
 
   constructor(raycaster: THREE.Raycaster, view: MainViewInterface) {
     this.raycast = raycaster;
@@ -25,6 +28,7 @@ export class MouseMove {
 
   public initContextMenu() {
     this.contextMenuMgr = new ContextMenuManager(this.view, false, this);
+    this.container.addEventListener("mouseup", this.onMouseUp);
   }
 
   // Renders a 3D box into the scene using user-given dimensions
@@ -60,9 +64,26 @@ export class MouseMove {
     obj.object.material.dispose();
   }
 
-  public relocateObject(obj: any) {
+  public relocateModel(obj: any) {
     this.mesh = obj.object;
     this.assignContainer();
+  }
+
+  public rotateModel(event: any) {
+    //this.mesh = obj.object;
+    this.rotateActive = true;
+    if (this.isDragging) {
+      if (this.mesh != null) {
+        this.mesh.rotation.z += event.movementX * 0.005;
+      }
+    }
+    else {
+      this.mesh = null;
+    }
+  }
+
+  public setIntersectAsMesh(obj: any) {
+    this.mesh = obj.object;
   }
 
   public setEventHandler = (event: any) => {
@@ -71,10 +92,11 @@ export class MouseMove {
   public setClickEventHandler = (event: any) => {
     this.mouseClicked(event);
   };
+  public setRotationHandler = (event: any) => {
+    this.rotateModel(event);
+  };
   public assignContainer() {
     this.container.addEventListener("mousemove", this.setEventHandler);
-    //this.container.addEventListener("mousedown", this.setClickEventHandler);
-    console.log("Added mouse listener");
   }
   public assignDetectionListener() {
     this.initContextMenu();
@@ -82,13 +104,16 @@ export class MouseMove {
   }
   public removeListener() {
     this.container.removeEventListener("mousemove", this.setEventHandler);
-    console.log("Removed mouse listener");
+  }
+  public addRotationListener() {
+    this.container.addEventListener("mousemove", this.setRotationHandler);
   }
   public onMouseMove(event: any) {
     this.mouse = new THREE.Vector3();
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     this.raycast.setFromCamera(this.mouse, this.raycast.camera);
+    this.objectOnMouse = true;
     if (this.mesh != null) {
       this.mesh.position.set(
         this.view.getCurrentCursorPosition().location.x,
@@ -96,30 +121,42 @@ export class MouseMove {
         this.view.getCurrentCursorPosition().location.z
       );
     }
-    //console.log(this.currentObjPos);
+  }
+  public onMouseUp() {
+    this.isDragging = false;
+    console.log(this.isDragging);
   }
 
-  public onMouseDown(event: any) {}
-
+  /*public mouseRotate(event: any) {
+    if (this.mesh != null) {
+      this.mesh.rotation.z += event.movementX * 0.005;
+    }
+  }*/
   public mouseClicked(event: any) {
+    this.mouse = new THREE.Vector3();
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    this.raycast.setFromCamera(this.mouse, this.raycast.camera);
+    this.intersect = this.raycast.intersectObjects(this.view.scene.children)[0];
     switch (event.button) {
       case 0:
         //LMB
-        console.log("Left mouse clicked");
+        //console.log(this.intersect);
+        if (this.intersect && !this.objectOnMouse) {
+          this.setIntersectAsMesh(this.intersect);
+          if (event.ctrlKey) {
+            this.isDragging = true;
+            console.log(this.isDragging);
+            this.addRotationListener();
+          }
+        }
+        this.isDragging = false;
         break;
       case 1:
         //MMB
-        console.log("Middle mouse clicked");
         break;
       case 2:
         //RMB
-        this.mouse = new THREE.Vector3();
-        this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-        this.raycast.setFromCamera(this.mouse, this.raycast.camera);
-        this.intersect = this.raycast.intersectObjects(
-          this.view.scene.children
-        )[0];
         if (this.intersect) {
           console.log(this.intersect);
           this.contextMenuMgr.setVar(this.view, this.intersect);

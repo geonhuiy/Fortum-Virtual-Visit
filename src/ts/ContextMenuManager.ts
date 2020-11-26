@@ -16,7 +16,7 @@ export class ContextMenuManager extends CustomLayer {
         {
           name: "Rotate",
           icon: "fa-level-up",
-          callback: function () {},
+          callback: this.rotateObject,
         },
         {
           name: "Relocate",
@@ -39,8 +39,12 @@ export class ContextMenuManager extends CustomLayer {
   };
 
   public relocateObject = () => {
-    this.mouseMove.relocateObject(this.object);
+    this.mouseMove.relocateModel(this.object);
   };
+
+  public rotateObject = () => {
+    //this.mouseMove.rotateModel(this.object);
+  }
 
   public setVar(view: any, object: any) {
     this.view = view;
