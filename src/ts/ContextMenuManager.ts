@@ -5,7 +5,6 @@ export class ContextMenuManager extends CustomLayer {
   public modelContextActive: boolean = false;
   private mouseMove: MouseMove;
   public object: any;
-
   constructor(view: MainViewInterface, isActive: boolean, mm: MouseMove) {
     super(view);
     this.modelContextActive = isActive;
@@ -15,10 +14,9 @@ export class ContextMenuManager extends CustomLayer {
     if (this.modelContextActive) {
       return [
         {
-          name: "Rotate",
-          icon: "fa-level-up",
-          callback: function () {
-          },
+          name: "Relocate",
+          icon: "fa-arrows",
+          callback: this.relocateObject,
         },
         {
           name: "Remove",
@@ -32,13 +30,14 @@ export class ContextMenuManager extends CustomLayer {
   }
 
   public removeObject = () => {
-      this.mouseMove.deleteModel(this.view, this.object);
-  }
+    this.mouseMove.deleteModel(this.view, this.object);
+  };
 
+  public relocateObject = () => {
+    this.mouseMove.relocateModel(this.object);
+  };
   public setVar(view: any, object: any) {
-      this.view = view;
-      this.object = object;
+    this.view = view;
+    this.object = object;
   }
 }
-
-

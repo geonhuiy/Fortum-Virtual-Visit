@@ -55,7 +55,7 @@ export class Modal {
     // Adds a listener to the NavVis API container
     container.addEventListener("click", (event) => {
       // Checks if there is a mesh (3D object) present
-      if (this.mouseMove.mesh != null) {
+      if (this.mouseMove.mesh != null && this.mouseMove.objectOnMouse) {
         // Only places the object with CTRL + LMB
         if (event.ctrlKey) {
           this.mouseMove.mesh.position.copy(
@@ -63,6 +63,7 @@ export class Modal {
           );
           this.mouseMove.removeListener();
           this.mouseMove.mesh = null;
+          this.mouseMove.objectOnMouse = false;
         }
       }
     });
