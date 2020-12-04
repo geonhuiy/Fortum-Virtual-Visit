@@ -77,9 +77,6 @@ export class MouseMove {
         this.mesh.rotation.z += event.movementX * 0.005;
       }
     }
-    else {
-      this.mesh = null;
-    }
   }
 
   public setIntersectAsMesh(obj: any) {
@@ -149,8 +146,11 @@ export class MouseMove {
             console.log(this.isDragging);
             this.addRotationListener();
           }
+          else {
+            this.isDragging = false;
+          }
+          
         }
-        this.isDragging = false;
         break;
       case 1:
         //MMB
