@@ -14,6 +14,16 @@ export class ContextMenuManager extends CustomLayer {
     if (this.modelContextActive) {
       return [
         {
+          name: "Rotate",
+          icon: "fa-level-up",
+          callback: this.rotateObject,
+        },
+      /*  {
+          name: "Rotate Vertically",
+          icon: "fa-level-down",
+          callback: this.rotateObjectVertical,
+        },*/
+        {
           name: "Relocate",
           icon: "fa-arrows",
           callback: this.relocateObject,
@@ -25,6 +35,7 @@ export class ContextMenuManager extends CustomLayer {
         },
       ];
     } else {
+      console.log("Error loading custom menu");
       return undefined;
     }
   }
@@ -36,6 +47,15 @@ export class ContextMenuManager extends CustomLayer {
   public relocateObject = () => {
     this.mouseMove.relocateModel(this.object);
   };
+
+  public rotateObject = () => {
+    //this.mouseMove.rotateModel(this.object);
+  }
+
+  public rotateObjectVertical = () => {
+    //this.mouseMove.rotateModel(this.object);
+  }
+
   public setVar(view: any, object: any) {
     this.view = view;
     this.object = object;
