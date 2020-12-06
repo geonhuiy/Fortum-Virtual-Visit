@@ -59,7 +59,6 @@ export class MouseMove {
     this.assignContainer();
   }
 
-
   public deleteModel(view: any, obj: any) {
     view.scene.remove(obj.object);
     obj.object.geometry.dispose();
@@ -74,23 +73,29 @@ export class MouseMove {
   public rotateModel(event: any) {
     //this.mesh = obj.object;
     if (this.isDragging === true) {
-   /*   console.log("this.isDragging 1 ",this.isDragging);
-      if (this.mesh != null) {
-          console.log("this.isDragging 2",this.isDragging);*/
-          this.mesh.rotation.z += event.movementX * 0.005;
-   /*   }
-   */
-    }else {
-  /*    console.log("no mesh??");
-     this.mesh = null; //
-      this.mouseUpFromRotation();
-     */
+      /*   console.log("this.isDragging 1 ",this.isDragging);
+         if (this.mesh != null) {
+             console.log("this.isDragging 2",this.isDragging);*/
+      this.mesh.rotation.z += event.movementX * 0.005;
+      /*   }
+      */
+    } else {
+      /*    console.log("no mesh??");
+         this.mesh = null; //
+          this.mouseUpFromRotation();
+         */
     }
   }
 
-  public mouseUpFromRotation(){
+  public rotateModelVertical(event: any) {
+    if (this.isDragging === true) {
+      this.mesh.rotation.x += event.movementX * 0.005;
+    }
+  }
+
+  public mouseUpFromRotation() {
     console.log("mouseUpFromRotation");
-    if(this.isDragging == true){
+    if (this.isDragging == true) {
       this.isDragging == false;
     };
   };
@@ -108,45 +113,59 @@ export class MouseMove {
   public setRotationHandler = (event: any) => {
     this.rotateModel(event);
   };
+  public setRotationHandlerVertical = (event: any) => {
+    this.rotateModelVertical(event);
+  };
 
   //Stop rotating with mouse click on anywhere
   public stopRotation = (event: any) => {
-    console.log("stopRotation. rotateActive: ",this.rotateActive);
-    if(this.rotateActive === true){
+    console.log("stopRotation. rotateActive: ", this.rotateActive);
+    if (this.rotateActive === true) {
+      //Stop horizontal rotation
       console.log("stop rotating");
-    try{
-      this.container.removeEventListener("mousemove", this.setRotationHandler);
-      }catch(e){
-        console.log("e: ",e);
+      try {
+        this.container.removeEventListener("mousemove", this.setRotationHandler);
+      } catch (e) {
+        console.log("e: ", e);
       }
-    }else{
+      //Stop vertical rotation
+      try {
+        this.container.removeEventListener("mousemove", this.setRotationHandlerVertical);
+      } catch (e) {
+        console.log("e: ", e);
+      }
+    } else {
       console.log("no rotate");
       this.rotateActive = true;
     }
-   
-  
+
   };
+
   public assignContainer() {
     this.container.addEventListener("mousemove", this.setEventHandler);
   }
+
   public assignDetectionListener() {
     this.initContextMenu();
     this.container.addEventListener("mousedown", this.setClickEventHandler);
   }
+
   public removeListener() {
     this.container.removeEventListener("mousemove", this.setEventHandler);
   }
+
   public addRotationListener() {
     this.container.addEventListener("mousemove", this.setRotationHandler);
   }
+
+  public addRotationListenerVertical() {
+    this.container.addEventListener("mousemove", this.setRotationHandlerVertical);
+  }
+
   public addMouseClickOffRotation() {
     this.container.addEventListener("click", this.stopRotation);
-  /* try{
-    this.container.removeEventListener("mousemove", this.setRotationHandler);
-    }catch(e){
-      console.log("e: ",e);
-    }*/
   }
+
   public onMouseMove(event: any) {
     this.mouse = new THREE.Vector3();
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -164,15 +183,9 @@ export class MouseMove {
   public onMouseUp() {
     this.mesh = null;
     this.isDragging = false;
-    console.log("rivi 165: ",this.isDragging);
-   // this.addMouseClickOffRotation();
   }
 
-  /*public mouseRotate(event: any) {
-    if (this.mesh != null) {
-      this.mesh.rotation.z += event.movementX * 0.005;
-    }
-  }*/
+
   public mouseClicked(event: any) {
     this.mouse = new THREE.Vector3();
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -183,24 +196,50 @@ export class MouseMove {
       case 0:
         //LMB
         //console.log(this.intersect);
+       
+        if (this.intersect && !this.objectOnMouse) {
+          this.setIntersectAsMesh(this.intersect);
+         
+           //Rotate Horizontally with Ctrl key
+          if (event.ctrlKey) {
+            this.rotateActive = false;
+            this.isDragging = true;
+
+            this.addRotationListener();
+            this.addMouseClickOffRotation();
+          } 
+          //Rotate Vertically with Alt key
+          else if(event.altKey){
+          
+            this.rotateActive = false;
+            this.isDragging = true;
+
+            this.addRotationListenerVertical();
+            this.addMouseClickOffRotation();
+          }
+          /*else
+          {
+            this.isDragging = false;
+          }*/
+        }
+
+        break;
+        //Bug in switch cases on context menu, for now vertical rotate is done with alt key
+   /*   case 1:
+        //Rotate vertically
         if (this.intersect && !this.objectOnMouse) {
           this.setIntersectAsMesh(this.intersect);
           if (event.ctrlKey) {
             this.rotateActive = false;
-            console.log("CTRL key");
             this.isDragging = true;
-            console.log("rivi 183: ",this.isDragging);          
-            
-            this.addRotationListener();
-            this.addMouseClickOffRotation();
-          }else{
-             this.isDragging = false;
-             
-          }
 
+            this.addRotationListenerVertical();
+            this.addMouseClickOffRotation();
+          } else {
+            this.isDragging = false;
+          }
         }
-        
-        break;
+        break;*/
       case 1:
         //MMB
         break;
