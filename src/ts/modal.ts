@@ -57,9 +57,11 @@ export class Modal {
       // Checks if there is a mesh (3D object) present
       if (this.mouseMove.mesh != null && this.mouseMove.objectOnMouse) {
         // Only places the object with CTRL + LMB
+
         if (event.ctrlKey) {
           this.mouseMove.mesh.position.copy(
-            this.main_view.getCurrentCursorPosition().location
+            //this.main_view.getCurrentCursorPosition().location
+            this.mouseMove.meshCoords
           );
           this.mouseMove.removeListener();
           this.mouseMove.mesh = null;

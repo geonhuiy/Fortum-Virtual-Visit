@@ -1,7 +1,9 @@
 import { MainViewInterface, CustomLayer } from "@navvis/indoorviewer";
 import * as THREE from "three";
-import { TubeBufferGeometry } from "three";
 import { ContextMenuManager } from "./ContextMenuManager";
+import { TubeBufferGeometry, Vector3 } from "three";
+
+//import { CustomMenuLayer } from "./CustomMenuLayer";
 declare global {
   interface Window {
     IV: any;
@@ -20,10 +22,20 @@ export class MouseMove {
   rotateActive: Boolean = false;
   objectOnMouse: Boolean = false;
   isDragging: Boolean = false;
+  public fP: any;
+  public fP2: any;
+  public minXPoint: any;
+  public maxXPoint: any;
+  public meshCoords: Vector3;
 
   constructor(raycaster: THREE.Raycaster, view: MainViewInterface) {
     this.raycast = raycaster;
     this.view = view;
+    this.fP = null; //First Click
+    this.fP2 = null; //Second Click
+    this.minXPoint = 0;
+    this.maxXPoint = 0;
+    this.meshCoords = new Vector3(0,0,0);
   }
 
   public initContextMenu() {
@@ -142,6 +154,10 @@ export class MouseMove {
   };
 
   public assignContainer() {
+
+    this.minXPoint = this.view.getCurrentCursorPosition().location.y;
+    this.maxXPoint = this.view.getCurrentCursorPosition().location.y;
+
     this.container.addEventListener("mousemove", this.setEventHandler);
   }
 
@@ -165,6 +181,9 @@ export class MouseMove {
   public addMouseClickOffRotation() {
     this.container.addEventListener("click", this.stopRotation);
   }
+  public calculateWallOnPosX(mousPos: any) {
+
+  }
 
   public onMouseMove(event: any) {
     this.mouse = new THREE.Vector3();
@@ -172,27 +191,92 @@ export class MouseMove {
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     this.raycast.setFromCamera(this.mouse, this.raycast.camera);
     this.objectOnMouse = true;
+
+    //Mouse position
+    var point2 = this.view.getCurrentCursorPosition().datasetLocation;
+    //  console.log("point2: ",point2);
+    var meshSize = this.mesh.geometry.toJSON();
+
+    // Half of the cube size
+    let mHeight = meshSize.height / 2;
+    let mWidth = meshSize.depth / 2;
+    let mLength = meshSize.width / 2;
+
+    let posY = this.view.getCurrentCursorPosition().location.z;
+    let posX = this.view.getCurrentCursorPosition().location.y;
+
+    let collapsingXwallMin = false;
+    //Get the wall by calculating smallest point of x axel
+    //Z axel
+
+    /* ////original conclusion below */
+    //  if (/*point2.y*/ posX >= this.minXPoint/*-2*/) {
+    /*    console.log("posX -= mlength");
+        posX -= mLength;
+      } else {
+        posX += mLength;
+      }*/
+
+    if (posX <= (this.minXPoint + 0.1)) {
+      //  if (posX <= (this.minXPoint)) {
+      this.minXPoint = posX;
+      //   console.log("posX: ", posX, " , minXpoint: ", this.minXPoint, " point2.y: ", point2.y);
+      posX += mLength;
+      collapsingXwallMin = true;
+    } else {
+      //   posX -= (mLength*2); //because calculating min axel takes half away
+      collapsingXwallMin = false;
+    }
+    console.log("collapsingXwallMin: ", collapsingXwallMin);
+
+    //Check if collpasing with walls and add half of to cube size on position
+    if (collapsingXwallMin === true) {
+      posX += mLength;
+    } else {
+      posX -= mLength;
+    }
+
+    /* Calculating Max point, not necessary if min works properly */ /* if (posX >= (this.maxXPoint)) {
+       // posX -= (mLength*2);
+        posX += mLength;
+        this.maxXPoint = posX;
+        console.log("MAX X posX: ", posX, " , maxXPoint: ", this.maxXPoint, " point2.y: ", point2.y);
+      //  posX -= (mLength*2); //because calculating min axel takes half away
+      }*/
+
+    //Y axel, height collapse detection
+    if (point2.z < 1) {
+      posY += mHeight;
+    } else {
+      posY -= mHeight;
+    }
+
+    //console.log("posY: ",posY);
+
     if (this.mesh != null) {
       this.mesh.position.set(
         this.view.getCurrentCursorPosition().location.x,
-        this.view.getCurrentCursorPosition().location.y,
-        this.view.getCurrentCursorPosition().location.z
+        posX,
+        posY
       );
     }
+       //console.log(this.currentObjPos);
+       this.meshCoords = new Vector3(this.view.getCurrentCursorPosition().location.x,posX,posY);
   }
   public onMouseUp() {
     this.mesh = null;
     this.isDragging = false;
   }
 
-
   public mouseClicked(event: any) {
-    this.mouse = new THREE.Vector3();
-    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    this.raycast.setFromCamera(this.mouse, this.raycast.camera);
-    this.intersect = this.raycast.intersectObjects(this.view.scene.children)[0];
+   
+    console.log("this.meshCoords: ",this.meshCoords);
+
+    //reset the calculating point on click
+    this.minXPoint = 0;
+
     switch (event.button) {
+
       case 0:
         //LMB
         //console.log(this.intersect);
@@ -245,6 +329,11 @@ export class MouseMove {
         break;
       case 2:
         //RMB
+        this.mouse = new THREE.Vector3();
+        this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        this.raycast.setFromCamera(this.mouse, this.raycast.camera);
+        this.intersect = this.raycast.intersectObjects(this.view.scene.children)[0];    
         if (this.intersect) {
           console.log(this.intersect);
           this.contextMenuMgr.setVar(this.view, this.intersect);
