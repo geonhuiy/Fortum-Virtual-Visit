@@ -1,6 +1,6 @@
 import { MainViewInterface, CustomLayer } from "@navvis/indoorviewer";
 import * as THREE from "three";
-import { TubeBufferGeometry } from "three";
+import { TubeBufferGeometry, Vector3 } from "three";
 
 //import { CustomMenuLayer } from "./CustomMenuLayer";
 declare global {
@@ -19,8 +19,8 @@ export class MouseMove {
   public fP: any;
   public fP2: any;
   public minXPoint: any;
-  public minXPoint2: any;
   public maxXPoint: any;
+  public meshCoords: Vector3;
 
   constructor(raycaster: THREE.Raycaster, view: MainViewInterface) {
     this.raycast = raycaster;
@@ -28,8 +28,8 @@ export class MouseMove {
     this.fP = null; //First Click
     this.fP2 = null; //Second Click
     this.minXPoint = 0;
-    this.minXPoint2 = 0;
     this.maxXPoint = 0;
+    this.meshCoords = new Vector3(0,0,0);
   }
   // Renders a 3D box into the scene using user-given dimensions
   public renderBox(): void {
@@ -64,14 +64,13 @@ export class MouseMove {
     this.mouseClicked(event);
   };
   public assignContainer() {
+
     this.minXPoint = this.view.getCurrentCursorPosition().location.y;
     this.maxXPoint = this.view.getCurrentCursorPosition().location.y;
-    console.log("Min X Point: ", this.minXPoint);
+
     this.container.addEventListener("mousemove", this.setEventHandler);
     //this.container.addEventListener("mousedown", this.setClickEventHandler);
     console.log("Added mouse listener");
-
-
   }
   public assignDetectionListener() {
     this.container.addEventListener("mousedown", this.setClickEventHandler);
@@ -90,16 +89,6 @@ export class MouseMove {
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     this.raycast.setFromCamera(this.mouse, this.raycast.camera);
-    //this.raycast.setFromCamera(this.mouse, this.raycast.camera);
- /*   var intersects = this.raycast.intersectObjects(
-      this.view.scene.children
-    )[0];
-    if (intersects) {
-      //  console.log(intersects);
-      var obj2 = new THREE.Vector3();
-      var pos2 = intersects.object.position;
-      //  console.log(intersects.object.position);
-    }*/
 
     //Mouse position
     var point2 = this.view.getCurrentCursorPosition().datasetLocation;
@@ -113,45 +102,45 @@ export class MouseMove {
 
     let posY = this.view.getCurrentCursorPosition().location.z;
     let posX = this.view.getCurrentCursorPosition().location.y;
- 
+
     let collapsingXwallMin = false;
     //Get the wall by calculating smallest point of x axel
     //Z axel
-  //  if (/*point2.y*/ posX >= this.minXPoint/*-2*/) {
-  /*    console.log("posX -= mlength");
-      posX -= mLength;
-    } else {
-      posX += mLength;
-    }*/
-  //  console.log("posX: ", posX, " , minXpoint: ", this.minXPoint, " point2.y: ", point2.y);
-  //  var positivePosX = posX*-1;
-  //  console.log(positivePosX, " , ", this.minXPoint*-1);
-  //  if (posX <= (this.minXPoint+0.3)) {
-    if (posX <= (this.minXPoint)) {
+
+    /* ////original conclusion below */
+    //  if (/*point2.y*/ posX >= this.minXPoint/*-2*/) {
+    /*    console.log("posX -= mlength");
+        posX -= mLength;
+      } else {
+        posX += mLength;
+      }*/
+
+    if (posX <= (this.minXPoint + 0.1)) {
+      //  if (posX <= (this.minXPoint)) {
       this.minXPoint = posX;
-   //   console.log("posX: ", posX, " , minXpoint: ", this.minXPoint, " point2.y: ", point2.y);
-   //   console.log("POS X SMALLER THAN this.minXPoint");
+      //   console.log("posX: ", posX, " , minXpoint: ", this.minXPoint, " point2.y: ", point2.y);
       posX += mLength;
       collapsingXwallMin = true;
-    }else {
-   //   posX -= (mLength*2); //because calculating min axel takes half away
-   //  console.log("Not collapsing at min wall, posX: ",posX);
-  //  console.log("this.minXpoint: ",this.minXPoint);
-    collapsingXwallMin = false;
+    } else {
+      //   posX -= (mLength*2); //because calculating min axel takes half away
+      collapsingXwallMin = false;
     }
-    console.log("collapsingXwallMin: ",collapsingXwallMin);
+    console.log("collapsingXwallMin: ", collapsingXwallMin);
 
-    if(collapsingXwallMin === true){
+    //Check if collpasing with walls and add half of to cube size on position
+    if (collapsingXwallMin === true) {
       posX += mLength;
+    } else {
+      posX -= mLength;
     }
 
-  /*  if (posX >= (this.maxXPoint)) {
-     // posX -= (mLength*2);
-      posX += mLength;
-      this.maxXPoint = posX;
-      console.log("MAX X posX: ", posX, " , maxXPoint: ", this.maxXPoint, " point2.y: ", point2.y);
-    //  posX -= (mLength*2); //because calculating min axel takes half away
-    }*/
+    /* Calculating Max point, not necessary if min works properly */ /* if (posX >= (this.maxXPoint)) {
+       // posX -= (mLength*2);
+        posX += mLength;
+        this.maxXPoint = posX;
+        console.log("MAX X posX: ", posX, " , maxXPoint: ", this.maxXPoint, " point2.y: ", point2.y);
+      //  posX -= (mLength*2); //because calculating min axel takes half away
+      }*/
 
     //Y axel, height collapse detection
     if (point2.z < 1) {
@@ -170,33 +159,16 @@ export class MouseMove {
       );
     }
     //console.log(this.currentObjPos);
+    this.meshCoords = new Vector3(this.view.getCurrentCursorPosition().location.x,posX,posY);
   }
 
   public mouseClicked(event: any) {
-    console.log(" minXpoint: ", this.minXPoint);
-    /*   var model = this.view.getObjectsUnderCursor(this.mouse)[0].object;
-   
-       var meshSize2 = model.geometry.toJSON();
-    // var model = this.view.getObjectsUnderCursor(this.mouse)[0].object;
-         console.log("poinmodelt2: ",model);
-       console.log("meshSize2: ",meshSize2);
-   
-   
-   
-       var point2 = this.view.getCurrentCursorPosition().datasetLocation;
-       console.log("point2: ",point2);
-     /*  this.raycast.setFromCamera(this.mouse, this.raycast.camera);
-       var intersects = this.raycast.intersectObjects(
-         this.view.scene.children
-       )[0];
-       if (intersects) {
-         console.log("intersects:" ,intersects);
-       }
-   */
-    /*
-        var point2 = this.view.getObjectsUnderCursor(this.mouse);
-        console.log("point2: ",point2);
-    */
+
+    console.log("this.meshCoords: ",this.meshCoords);
+
+    //reset the calculating point on click
+    this.minXPoint = 0;
+
     switch (event.button) {
 
       case 0:
@@ -208,7 +180,6 @@ export class MouseMove {
         console.log("Middle mouse clicked");
         break;
       case 2:
-        console.log("CASE 2? ");
         //RMB
         this.mouse = new THREE.Vector3();
         this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
