@@ -18,12 +18,18 @@ export class MouseMove {
   box: THREE.Box3;
   public fP: any;
   public fP2: any;
-  
+  public minXPoint: any;
+  public minXPoint2: any;
+  public maxXPoint: any;
+
   constructor(raycaster: THREE.Raycaster, view: MainViewInterface) {
     this.raycast = raycaster;
     this.view = view;
     this.fP = null; //First Click
     this.fP2 = null; //Second Click
+    this.minXPoint = 0;
+    this.minXPoint2 = 0;
+    this.maxXPoint = 0;
   }
   // Renders a 3D box into the scene using user-given dimensions
   public renderBox(): void {
@@ -58,10 +64,13 @@ export class MouseMove {
     this.mouseClicked(event);
   };
   public assignContainer() {
+    this.minXPoint = this.view.getCurrentCursorPosition().location.y;
+    this.maxXPoint = this.view.getCurrentCursorPosition().location.y;
+    console.log("Min X Point: ", this.minXPoint);
     this.container.addEventListener("mousemove", this.setEventHandler);
     //this.container.addEventListener("mousedown", this.setClickEventHandler);
     console.log("Added mouse listener");
-    
+
 
   }
   public assignDetectionListener() {
@@ -71,6 +80,11 @@ export class MouseMove {
     this.container.removeEventListener("mousemove", this.setEventHandler);
     console.log("Removed mouse listener");
   }
+
+  public calculateWallOnPosX(mousPos: any) {
+
+  }
+
   public onMouseMove(event: any) {
     this.mouse = new THREE.Vector3();
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -81,45 +95,72 @@ export class MouseMove {
       this.view.scene.children
     )[0];
     if (intersects) {
-      //console.log(intersects);
-      console.log(intersects.object.position);
+      //  console.log(intersects);
+      var obj2 = new THREE.Vector3();
+      var pos2 = intersects.object.position;
+      //  console.log(intersects.object.position);
+    }*/
+
+    //Mouse position
+    var point2 = this.view.getCurrentCursorPosition().datasetLocation;
+    //  console.log("point2: ",point2);
+    var meshSize = this.mesh.geometry.toJSON();
+
+    // Half of the cube size
+    let mHeight = meshSize.height / 2;
+    let mWidth = meshSize.depth / 2;
+    let mLength = meshSize.width / 2;
+
+    let posY = this.view.getCurrentCursorPosition().location.z;
+    let posX = this.view.getCurrentCursorPosition().location.y;
+ 
+    let collapsingXwallMin = false;
+    //Get the wall by calculating smallest point of x axel
+    //Z axel
+  //  if (/*point2.y*/ posX >= this.minXPoint/*-2*/) {
+  /*    console.log("posX -= mlength");
+      posX -= mLength;
+    } else {
+      posX += mLength;
+    }*/
+  //  console.log("posX: ", posX, " , minXpoint: ", this.minXPoint, " point2.y: ", point2.y);
+  //  var positivePosX = posX*-1;
+  //  console.log(positivePosX, " , ", this.minXPoint*-1);
+  //  if (posX <= (this.minXPoint+0.3)) {
+    if (posX <= (this.minXPoint)) {
+      this.minXPoint = posX;
+   //   console.log("posX: ", posX, " , minXpoint: ", this.minXPoint, " point2.y: ", point2.y);
+   //   console.log("POS X SMALLER THAN this.minXPoint");
+      posX += mLength;
+      collapsingXwallMin = true;
+    }else {
+   //   posX -= (mLength*2); //because calculating min axel takes half away
+   //  console.log("Not collapsing at min wall, posX: ",posX);
+  //  console.log("this.minXpoint: ",this.minXPoint);
+    collapsingXwallMin = false;
+    }
+    console.log("collapsingXwallMin: ",collapsingXwallMin);
+
+    if(collapsingXwallMin === true){
+      posX += mLength;
     }
 
-   */
+  /*  if (posX >= (this.maxXPoint)) {
+     // posX -= (mLength*2);
+      posX += mLength;
+      this.maxXPoint = posX;
+      console.log("MAX X posX: ", posX, " , maxXPoint: ", this.maxXPoint, " point2.y: ", point2.y);
+    //  posX -= (mLength*2); //because calculating min axel takes half away
+    }*/
 
-     var point2 = this.view.getCurrentCursorPosition().datasetLocation;
-    console.log("point2: ",point2);
+    //Y axel, height collapse detection
+    if (point2.z < 1) {
+      posY += mHeight;
+    } else {
+      posY -= mHeight;
+    }
 
-  var meshSize = this.mesh.geometry.toJSON();
- 
-//   console.log("mesh depth: ",meshSize.depth);
-//   console.log("mesh height: ",meshSize.height);
-//    console.log("mesh width: ",meshSize.width);
-
-
-
-
-// Half of the cube size
- let mHeight = meshSize.height/2;
-  let mWidth = meshSize.depth/2;
-  let mLength = meshSize.width/2;
-
-  let posY = this.view.getCurrentCursorPosition().location.z;
-  let posX = this.view.getCurrentCursorPosition().location.y;
-
-  if(point2.z < 1){
-    posY +=mHeight;
-  }else{
-    posY -=mHeight;
-  }
-
-  if(point2.y > -2){
-    posX -=mLength;
-  }else{
-    posX +=mLength;
-  }
-
- //console.log("posY: ",posY);
+    //console.log("posY: ",posY);
 
     if (this.mesh != null) {
       this.mesh.position.set(
@@ -132,32 +173,32 @@ export class MouseMove {
   }
 
   public mouseClicked(event: any) {
-
-    var model = this.view.getObjectsUnderCursor(this.mouse)[0].object;
-
-    var meshSize2 = model.geometry.toJSON();
- // var model = this.view.getObjectsUnderCursor(this.mouse)[0].object;
-      console.log("poinmodelt2: ",model);
-    console.log("meshSize2: ",meshSize2);
-
-
-
-    var point2 = this.view.getCurrentCursorPosition().datasetLocation;
-    console.log("point2: ",point2);
-    this.raycast.setFromCamera(this.mouse, this.raycast.camera);
-    var intersects = this.raycast.intersectObjects(
-      this.view.scene.children
-    )[0];
-    if (intersects) {
-      console.log("intersects:" ,intersects);
-    }
-
-/*
-    var point2 = this.view.getObjectsUnderCursor(this.mouse);
-    console.log("point2: ",point2);
-*/
+    console.log(" minXpoint: ", this.minXPoint);
+    /*   var model = this.view.getObjectsUnderCursor(this.mouse)[0].object;
+   
+       var meshSize2 = model.geometry.toJSON();
+    // var model = this.view.getObjectsUnderCursor(this.mouse)[0].object;
+         console.log("poinmodelt2: ",model);
+       console.log("meshSize2: ",meshSize2);
+   
+   
+   
+       var point2 = this.view.getCurrentCursorPosition().datasetLocation;
+       console.log("point2: ",point2);
+     /*  this.raycast.setFromCamera(this.mouse, this.raycast.camera);
+       var intersects = this.raycast.intersectObjects(
+         this.view.scene.children
+       )[0];
+       if (intersects) {
+         console.log("intersects:" ,intersects);
+       }
+   */
+    /*
+        var point2 = this.view.getObjectsUnderCursor(this.mouse);
+        console.log("point2: ",point2);
+    */
     switch (event.button) {
-      
+
       case 0:
         //LMB
         console.log("Left mouse clicked");
