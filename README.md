@@ -12,5 +12,10 @@ This project was developed by students of [Metropolia University of Applied Scie
 
 ## Table of Contents  
 * [Prerequisites]
-* [How to run]
+* [How to run]  
+
+## Prerequisites  
+- Node.js  
+>https://nodejs.org  
+This project requires Node.js to be installed to initiate/set up and further run the application.
 
