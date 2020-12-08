@@ -11,11 +11,13 @@ This project was developed by students of [Metropolia University of Applied Scie
 ![GitHub last commit](https://img.shields.io/github/last-commit/geonhuiy/Fortum-Virtual-Visit) ![GitHub contributors](https://img.shields.io/github/contributors/geonhuiy/Fortum-Virtual-Visit) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/geonhuiy/Fortum-Virtual-Visit) ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/geonhuiy/Fortum-Virtual-Visit) ![GitHub All Releases](https://img.shields.io/github/downloads/geonhuiy/Fortum-Virtual-Visit/total)
 
 ## Table of Contents  
-* [Prerequisites]
-* [How to run]  
+* [Prerequisites](#prerequisites)
+* [How to run](#how-to-run)  
 
 ## Prerequisites  
 - Node.js  
 >https://nodejs.org  
-This project requires Node.js to be installed to initiate/set up and further run the application.
+This project requires Node.js to be installed to initiate/set up and further run the application.  
+
+## How to run
 
