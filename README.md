@@ -1,7 +1,7 @@
 # Fortum-Virtual-Visit
 Project repository for Metropolia Innovation Project 2020, Fortum Virtual Visits  
 
-3D model placement application/platform which revolutionizes industrial planning with placing 3D models of machinery & equipment in Google Earth like virtual reality. 
+#### 3D model placement application/platform which revolutionizes industrial planning with placing 3D models of machinery & equipment in Google Earth like virtual reality. 
 
 This application/platform is built on top of the [Navvis](https://www.navvis.com/) platform, utilizing the IndoorViewer API. The APIDoc for the IndoorViewer API can be found [here](https://docs.navvis.com/cloud/current/en/html/_static/ts_docs/index.html).  
 The main features were built with [three.js](https://threejs.org/) for the 3D environment functionality.  
