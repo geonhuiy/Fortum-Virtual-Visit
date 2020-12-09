@@ -23,8 +23,8 @@ This project requires Node.js to be installed to initiate/set up and further run
 1. Clone the files from the repository to your local machine via [git](https://git-scm.com/downloads).  
    `git clone https://github.com/geonhuiy/Fortum-Virtual-Visit.git`  
 
-2. Navigate to the project directory and launch the application with  
-   `npm run serve`
+2. Navigate to the project directory and launch the application on the browser with  
+   `npm run serve`  
 
 
 
