@@ -13,6 +13,7 @@ This project was developed by students of [Metropolia University of Applied Scie
 ## Table of Contents  
 * [Prerequisites](#prerequisites)
 * [How to run](#how-to-run)  
+* [Changing IndoorViewer instance](#changing-indoorviewer-instance)  
 
 ## Prerequisites  
 - Node.js  
@@ -23,8 +24,15 @@ This project requires Node.js to be installed to initiate/set up and further run
 1. Clone the files from the repository to your local machine via [git](https://git-scm.com/downloads).  
    `git clone https://github.com/geonhuiy/Fortum-Virtual-Visit.git`  
 
-2. Navigate to the project directory and launch the application on the browser with  
+2. Navigate to the project directory and install the required npm packages with  
+   `npm i`  
+
+3. After the necessary npm packages are installed, the project can be launched with  
    `npm run serve`  
 
+## Changing IndoorViewer instance  
+The current version of the project is built on top of a demo instance of the IndoorViewer instance.  
+>https://nvdev-0.iv.navvis.com/  
 
+To load the features onto a desired IndoorViewer instance, the URL to the instance needs to be modified before the application is launched. 
 
