@@ -45,7 +45,7 @@ getApi("IndoorViewerURLHere").then((iv: ApiInterface) => {
       this.modal.assignEventListeners();
       this.main_view = iv.legacyApi.getMainView();
       new SideBarMenuModifier(iv);
-    });
+});
 ```
 
 
