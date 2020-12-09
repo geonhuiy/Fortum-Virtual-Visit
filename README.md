@@ -35,8 +35,8 @@ The current version of the project is built on top of a demo instance of the Ind
 >https://nvdev-0.iv.navvis.com/  
 
 To load the features onto a desired IndoorViewer instance, the URL to the instance needs to be modified before the application is launched. 
-Under the project directory, navigate to  
-`src/ts/index.ts`  
+Under the project directory, navigate to `src/ts/index.ts`.  
+
 The URL for the desired IndoorViewer instance should be placed instead of the text `IndoorViewerURLHere` :  
 ```
 getApi("IndoorViewerURLHere").then((iv: ApiInterface) => {
